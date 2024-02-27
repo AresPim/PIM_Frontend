@@ -4,10 +4,18 @@ import 'package:fals/features/authentication/screens/signup/widgets/signup_radio
 import 'package:fals/features/authentication/screens/signup/widgets/terms_conditions.dart';
 import 'package:fals/utils/constants/sizes.dart';
 import 'package:fals/utils/constants/text_strings.dart';
+import 'package:fals/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+
 import '../journalist_signup/document_verification.dart';
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+final url = 'http://192.168.0.186:9090/';
+final auth = url + 'auth/signup';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({Key? key});
@@ -20,9 +28,37 @@ class _SignUpFormState extends State<SignUpForm> {
   String? gender;
   bool isJournalist = false;
 
+  TextEditingController tfusername = TextEditingController();
+  TextEditingController tfemail = TextEditingController();
+  TextEditingController tfphonenmbr = TextEditingController();
+  TextEditingController tfpassword = TextEditingController();
+  bool _isNotValidate = false;
+
+  void signup() async {
+    if (tfemail.text.isNotEmpty &&
+        tfpassword.text.isNotEmpty &&
+        tfusername.text.isNotEmpty &&
+        tfphonenmbr.text.isNotEmpty) {
+      var reqbody = {
+        "username": tfemail.text,
+        "email": tfemail.text,
+        "phoneNumber": tfemail.text,
+        "password": tfpassword.text,
+      };
+      var response = await http.post(Uri.parse(auth),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(reqbody));
+      print(response);
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final dark = THelperFunctions.isDarkMode(context);
 
     return Form(
       child: Column(
@@ -37,7 +73,6 @@ class _SignUpFormState extends State<SignUpForm> {
               Spacer(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
-
                 child: Switch(
                   value: isJournalist,
                   onChanged: (value) {
@@ -51,17 +86,18 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
 
           const SizedBox(height: TSizes.spaceBtwSections),
-          // Username
 
+          // Username
           TextFormField(
+            controller: tfusername,
             expands: false,
             decoration: const InputDecoration(
               labelText: TTexts.username,
             ),
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
-          // Full Name
 
+          // Full Name
           Row(
             children: [
               Expanded(
@@ -84,9 +120,9 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
 
-
           // Email
           TextFormField(
+            controller: tfemail,
             expands: false,
             decoration: const InputDecoration(
               labelText: TTexts.email,
@@ -96,6 +132,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
           // Phone Number
           TextFormField(
+            controller: tfphonenmbr,
             expands: false,
             decoration: const InputDecoration(
               labelText: TTexts.phoneNo,
@@ -105,6 +142,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
           // Password
           TextFormField(
+            controller: tfpassword,
             obscureText: true,
             decoration: const InputDecoration(
               suffixIcon: Icon(Iconsax.eye_slash),
@@ -161,6 +199,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   // If the user is a journalist, navigate to DocumentVerification screen
                   Get.to(() => DocumentVerificationPage());
                 } else {
+                  signup();
                   // If the user is not a journalist, navigate to VerifyEmailScreen
                   Get.to(() => VerifyEmailScreen());
                 }
@@ -198,7 +237,6 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
           ),
-
         ],
       ),
     );
