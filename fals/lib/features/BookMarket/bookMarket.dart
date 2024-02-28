@@ -34,8 +34,7 @@ class BookMarket extends StatelessWidget {
               title: const Text(
                   'Ukraine\'s President Zelensky to BBC: Blood money being paid ...'),
               subtitle: const Text('BBC News Ⓒ 14m ago'),
-              leading: Image.network(
-                  'https://img.freepik.com/free-photo/full-shot-soldiers-fighting-together_23-2150804317.jpg'), // Remplacez 'https://example.com/your_image.jpg' par l'URL de votre image en ligne
+              leading: Image.asset('assets/images/content/rs.png'),
               onTap: () {
                 // Navigate to the news article details page
               },
