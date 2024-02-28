@@ -26,28 +26,38 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  String? gender;
+  String? gender = 'male';
   bool isJournalist = false;
 
   TextEditingController tfusername = TextEditingController();
   TextEditingController tfemail = TextEditingController();
   TextEditingController tfphonenmbr = TextEditingController();
   TextEditingController tfpassword = TextEditingController();
+  TextEditingController tffirstname = TextEditingController();
+  TextEditingController tflastname = TextEditingController();
+  TextEditingController tfconfirmpwd = TextEditingController();
 
   bool _isNotValidate = false;
 
   final _formKey = GlobalKey<FormState>(); // Clé globale pour le formulaire
+  List<String> genderOptions = ['male', 'female']; // Liste des options de genre
 
   void signup() async {
     if (tfemail.text.isNotEmpty &&
         tfpassword.text.isNotEmpty &&
+        tffirstname.text.isNotEmpty &&
         tfusername.text.isNotEmpty &&
+        tflastname.text.isNotEmpty &&
+        tfconfirmpwd.text == tfpassword.text &&
         tfphonenmbr.text.isNotEmpty) {
       var reqbody = {
         "username": tfusername.text,
         "email": tfemail.text,
         "phoneNumber": tfphonenmbr.text,
         "password": tfpassword.text,
+        "firstName": tffirstname.text,
+        "lastName": tflastname.text,
+        "gender": gender, // Ajoutez le genre au corps de la requête
       };
       var response = await http.post(Uri.parse(auth),
           headers: {"Content-Type": "application/json"},
@@ -113,6 +123,7 @@ class _SignUpFormState extends State<SignUpForm> {
             children: [
               Expanded(
                 child: TextFormField(
+                  controller: tffirstname,
                   expands: false,
                   decoration: const InputDecoration(
                     labelText: TTexts.firstName,
@@ -122,6 +133,7 @@ class _SignUpFormState extends State<SignUpForm> {
               const SizedBox(width: 10.0),
               Expanded(
                 child: TextFormField(
+                  controller: tflastname,
                   decoration: const InputDecoration(
                     labelText: TTexts.lastName,
                   ),
@@ -181,11 +193,18 @@ class _SignUpFormState extends State<SignUpForm> {
 
           // Confirm Password
           TextFormField(
+            controller: tfconfirmpwd,
             obscureText: true,
             decoration: const InputDecoration(
               suffixIcon: Icon(Iconsax.eye_slash),
               labelText: TTexts.confirmPassword,
             ),
+            validator: (value) {
+              if (value != tfpassword.text) {
+                return 'Passwords do not match';
+              }
+              return null;
+            },
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
 
@@ -193,25 +212,32 @@ class _SignUpFormState extends State<SignUpForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GradientRadio<String>(
-                value: 'male',
-                groupValue: gender,
-                onChanged: (value) {
-                  setState(() {
-                    gender = value;
-                  });
-                },
-              ),
-              const SizedBox(width: 10.0),
-              GradientRadio<String>(
-                value: 'female',
-                groupValue: gender,
-                onChanged: (value) {
-                  setState(() {
-                    gender = value;
-                  });
-                },
-              ),
+              for (var option
+                  in genderOptions) // Créez un bouton radio pour chaque option
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      gender =
+                          option; // Mettez à jour la valeur de genre sélectionnée
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Radio(
+                        value: option,
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = value.toString();
+                          });
+                        },
+                      ),
+                      Text(option[0].toUpperCase() +
+                          option.substring(
+                              1)), // Mettez la première lettre en majuscule
+                    ],
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 16.0),
