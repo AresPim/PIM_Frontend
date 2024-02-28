@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 class NewsPage extends StatelessWidget {
   final List<Map<String, String>> headlines = [
-    {"title": "Trending", "image": "assets/images/rs.png"},
-    {"title": "Verified", "image": "assets/images/rr.png"},
+    {"title": "Trending", "image": "assets/images/content/rs.png"},
+    {"title": "Verified", "image": "assets/images/content/rr.png"},
     {
       "title": "Russian warship: Moskva sinks in Black Sea - BBC News",
-      "image": "assets/images/rs.png"
+      "image": "assets/images/content/rs.png"
     },
-    {"title": "Not Yet Verified", "image": "assets/images/rs.png"},
+    {"title": "Not Yet Verified", "image": "assets/images/content/rs.png"},
     {
       "title": "Ukraine's President Zelensky to BBC: Blood money being paid for Russian oil - BBC News",
-      "image": "assets/images/rr.png"
+      "image": "assets/images/content/rr.png"
     }
   ];
 

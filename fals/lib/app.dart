@@ -2,8 +2,7 @@ import 'package:fals/features/authentication/screens/onboarding/onboarding.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:fals/utils/theme/theme.dart';
-import 'package:fals/features/news/screens/NewsArticlePage.dart';
-import 'package:fals/features/news/screens/home/NewsPage.dart';
+//import 'package:fals/features/news/screens/home/NewsPage.dart';
 
 
 class App extends StatelessWidget {
