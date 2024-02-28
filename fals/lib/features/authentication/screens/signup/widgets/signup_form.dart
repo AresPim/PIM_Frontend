@@ -7,6 +7,7 @@ import 'package:fals/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+
 import '../journalist_signup/document_verification.dart';
 
 class SignUpForm extends StatefulWidget {

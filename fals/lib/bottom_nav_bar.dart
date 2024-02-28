@@ -1,8 +1,12 @@
+import 'package:fals/features/Chat/ChatPage.dart';
 import 'package:fals/features/news/screens/home/home.dart';
 import 'package:fals/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:fals/features/BookMarket/bookMarket.dart';
+
+
 
 class BottomNavigationMenu extends StatelessWidget {
   const BottomNavigationMenu({super.key});
@@ -53,12 +57,8 @@ class NavigationController extends GetxController {
 //Change the containers with the screens.
   final screens = [
     const HomeScreen(),
-    Container(
-      color: Colors.black,
-    ),
-    Container(
-      color: Colors.red,
-    ),
+     ChatPage(),
+    const BookMarket(),
     Container(
       color: Colors.yellow,
     )
