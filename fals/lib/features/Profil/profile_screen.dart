@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fals/features/news/screens/NewsArticlePage.dart';
+import './EditProfileScreen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key});
@@ -9,6 +10,18 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              // Navigate to EditProfileScreen when the edit button is pressed
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EditProfileScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: [
