@@ -9,6 +9,7 @@ import 'package:fals/features/BookMarket/bookMarket.dart';
 //lib\features\Profil\profile_screen.dart
 import 'package:fals/features/Profil/profile_screen.dart';
 
+
 class BottomNavigationMenu extends StatelessWidget {
   const BottomNavigationMenu({super.key});
 
@@ -57,7 +58,7 @@ class NavigationController extends GetxController {
 
 //Change the containers with the screens.
   final screens = [
-    const HomeScreen(),
+   const HomeScreen(),
     ChatPage(),
     const BookMarket(),
     const ProfileScreen(),

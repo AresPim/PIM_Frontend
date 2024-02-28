@@ -21,11 +21,21 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chat'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () {
+              // Ajoutez ici la logique pour afficher l'historique du chat
+              // par exemple, en naviguant vers une nouvelle page ou en affichant un dialogue
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
+              shrinkWrap: true,
               itemCount: _messages.length,
               itemBuilder: (BuildContext context, int index) {
                 final message = _messages[index];
@@ -44,7 +54,9 @@ class _ChatPageState extends State<ChatPage> {
                     controller: _textController,
                     decoration: InputDecoration(
                       labelText: 'Enter your message...',
+                      contentPadding: EdgeInsets.symmetric(vertical: 10.0),
                     ),
+                    textAlignVertical: TextAlignVertical.center,
                   ),
                 ),
                 IconButton(
@@ -58,6 +70,7 @@ class _ChatPageState extends State<ChatPage> {
               ],
             ),
           ),
+          SizedBox(height: 100), // Ajout d'un espace de 100 pixels
         ],
       ),
     );
@@ -107,3 +120,4 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
+
