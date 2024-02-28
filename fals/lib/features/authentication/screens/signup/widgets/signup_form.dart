@@ -14,7 +14,7 @@ import '../journalist_signup/document_verification.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-final url = 'http://192.168.0.186:9090/';
+final url = 'http://192.168.1.14:9090/';
 final auth = url + 'auth/signup';
 
 class SignUpForm extends StatefulWidget {
@@ -32,7 +32,10 @@ class _SignUpFormState extends State<SignUpForm> {
   TextEditingController tfemail = TextEditingController();
   TextEditingController tfphonenmbr = TextEditingController();
   TextEditingController tfpassword = TextEditingController();
+
   bool _isNotValidate = false;
+
+  final _formKey = GlobalKey<FormState>(); // Clé globale pour le formulaire
 
   void signup() async {
     if (tfemail.text.isNotEmpty &&
@@ -40,9 +43,9 @@ class _SignUpFormState extends State<SignUpForm> {
         tfusername.text.isNotEmpty &&
         tfphonenmbr.text.isNotEmpty) {
       var reqbody = {
-        "username": tfemail.text,
+        "username": tfusername.text,
         "email": tfemail.text,
-        "phoneNumber": tfemail.text,
+        "phoneNumber": tfphonenmbr.text,
         "password": tfpassword.text,
       };
       var response = await http.post(Uri.parse(auth),
@@ -61,6 +64,7 @@ class _SignUpFormState extends State<SignUpForm> {
     final dark = THelperFunctions.isDarkMode(context);
 
     return Form(
+      key: _formKey,
       child: Column(
         children: [
           // Toggle
@@ -94,6 +98,12 @@ class _SignUpFormState extends State<SignUpForm> {
             decoration: const InputDecoration(
               labelText: TTexts.username,
             ),
+            validator: (value) {
+              if (value!.length < 4) {
+                return 'Username must be at least 4 characters long';
+              }
+              return null;
+            },
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
 
@@ -127,6 +137,15 @@ class _SignUpFormState extends State<SignUpForm> {
             decoration: const InputDecoration(
               labelText: TTexts.email,
             ),
+            keyboardType: TextInputType.emailAddress,
+            validator: (value) {
+              if (value!.isEmpty ||
+                  !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                      .hasMatch(value)) {
+                return 'Please enter a valid email';
+              }
+              return null;
+            },
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
 
@@ -137,6 +156,14 @@ class _SignUpFormState extends State<SignUpForm> {
             decoration: const InputDecoration(
               labelText: TTexts.phoneNo,
             ),
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value!.isEmpty ||
+                  (!value.startsWith('+') && !value.startsWith('0'))) {
+                return 'Please enter a valid phone number';
+              }
+              return null;
+            },
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
 
@@ -199,9 +226,12 @@ class _SignUpFormState extends State<SignUpForm> {
                   // If the user is a journalist, navigate to DocumentVerification screen
                   Get.to(() => DocumentVerificationPage());
                 } else {
-                  signup();
-                  // If the user is not a journalist, navigate to VerifyEmailScreen
-                  Get.to(() => VerifyEmailScreen());
+                  // Valider le formulaire avant de soumettre
+                  if (_formKey.currentState!.validate()) {
+                    signup();
+                    // If the user is not a journalist, navigate to VerifyEmailScreen
+                    Get.to(() => VerifyEmailScreen());
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(
