@@ -3,27 +3,23 @@ import 'package:http/http.dart' as http;
 
 
 Future<void> signupUser(
-    String username,
-    String firstName,
-    String lastName,
-    String email,
-    String phoneNumber,
-    String password,
-    bool isJournalist, // Add toggle state for journalist
-    String gender,      // Add gender
-    ) async {
+  String username,
+  String fistName,
+  String lastName,
+  String email,
+  String phoneNumber,
+  String password,
+) async {
   final url = Uri.parse('http://localhost:9090/auth/signup');
   final response = await http.post(
     url,
     body: json.encode({
       'username': username,
-      'firstName': firstName,
+      'firstName': fistName,
       'lastName': lastName,
       'email': email,
       'phoneNumber': phoneNumber,
       'password': password,
-      'isJournalist': isJournalist, // Include toggle state for journalist
-      'gender': gender,              // Include gender
     }),
     headers: {'Content-Type': 'application/json'},
   );

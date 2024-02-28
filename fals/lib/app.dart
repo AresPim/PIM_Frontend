@@ -13,6 +13,6 @@ class App extends StatelessWidget {
         theme: TAppTheme.lightTheme,
         darkTheme: TAppTheme.darkTheme,
         debugShowCheckedModeBanner: false,
-        home:  OnBoardingScreen());
+        home: OnBoardingScreen());
   }
 }
