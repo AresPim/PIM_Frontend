@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../utils/constants/colors.dart';
@@ -35,14 +34,15 @@ class VerticalImageText extends StatelessWidget {
               height: 65,
               padding: EdgeInsets.all(TSizes.sm),
               decoration: BoxDecoration(
-                color: backgroundColor ?? (dark ? TColors.black : TColors.white ),
+                color:
+                    backgroundColor ?? (dark ? TColors.black : TColors.white),
                 borderRadius: BorderRadius.circular(100),
               ),
               child: Center(
                 child: Image(
                   image: AssetImage(image),
                   fit: BoxFit.cover,
-                  color: dark ? TColors.light : TColors.dark ,
+                  color: dark ? TColors.light : TColors.dark,
                 ),
               ),
             ),
