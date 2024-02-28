@@ -2,7 +2,6 @@ import 'package:fals/features/authentication/screens/onboarding/onboarding.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:fals/utils/theme/theme.dart';
-import 'package:fals/features/Profil/EditProfileScreen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -14,7 +13,6 @@ class App extends StatelessWidget {
         theme: TAppTheme.lightTheme,
         darkTheme: TAppTheme.darkTheme,
         debugShowCheckedModeBanner: false,
-        //home:  OnBoardingScreen());
-        home: EditProfileScreen());
+        home: OnBoardingScreen());
   }
 }
