@@ -10,7 +10,8 @@ class NewsPage extends StatelessWidget {
     },
     {"title": "Not Yet Verified", "image": "assets/images/content/rs.png"},
     {
-      "title": "Ukraine's President Zelensky to BBC: Blood money being paid for Russian oil - BBC News",
+      "title":
+          "Ukraine's President Zelensky to BBC: Blood money being paid for Russian oil - BBC News",
       "image": "assets/images/content/rr.png"
     }
   ];
@@ -25,7 +26,8 @@ class NewsPage extends StatelessWidget {
         itemCount: headlines.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -44,7 +46,8 @@ class NewsPage extends StatelessWidget {
                 Text(
                   headlines[index]["title"]!,
                   style: TextStyle(
-                    fontWeight: index % 2 == 0 ? FontWeight.bold : FontWeight.normal,
+                    fontWeight:
+                        index % 2 == 0 ? FontWeight.bold : FontWeight.normal,
                     fontSize: 16.0,
                   ),
                 ),
@@ -64,9 +67,3 @@ class NewsPage extends StatelessWidget {
     );
   }
 }
-
-//void main() {
-  //runApp(MaterialApp(
-   // home: NewsPage(),
-//));
-//}

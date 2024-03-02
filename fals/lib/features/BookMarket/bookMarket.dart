@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'ContextPage.dart';
+
 class BookMarket extends StatelessWidget {
   const BookMarket({Key? key}) : super(key: key);
 
@@ -20,23 +22,37 @@ class BookMarket extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ListTile(
-              title: const Text('Ukraine\'s President Zelensky to BBC: Blood money being paid ...'),
-              subtitle: const Text('BBC News Ⓒ 14m ago'),
-              leading: Image.asset('assets/images/content/rr.png'), // Remplacez 'assets/your_image.png' par le chemin de votre image locale
+            GestureDetector(
               onTap: () {
-                // Navigate to the news article details page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContextPage()),
+                );
               },
+              child: ListTile(
+                title: const Text(
+                    'Ukraine\'s President Zelensky to BBC: Blood money being paid ...'),
+                subtitle: const Text('BBC News Ⓒ 14m ago'),
+                leading: Image.asset(
+                    'assets/images/content/rr.png'), // Replace with your local image path
+              ),
             ),
-            ListTile(
-              title: const Text('Ukraine\'s President Zelensky to BBC: Blood money being paid ...'),
-              subtitle: const Text('BBC News Ⓒ 14m ago'),
-              leading: Image.network('https://img.freepik.com/free-photo/full-shot-soldiers-fighting-together_23-2150804317.jpg'), // Remplacez 'https://example.com/your_image.jpg' par l'URL de votre image en ligne
+            GestureDetector(
               onTap: () {
-                // Navigate to the news article details page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContextPage()),
+                );
               },
+              child: ListTile(
+                title: const Text(
+                    'Ukraine\'s President Zelensky to BBC: Blood money being paid ...'),
+                subtitle: const Text('BBC News Ⓒ 14m ago'),
+                leading: Image.asset(
+                    'assets/images/content/rs.png'), // Replace with your local image path
+              ),
             ),
-            // Add more news articles as ListTile widgets
+            // Add more news articles as GestureDetector widgets
           ],
         ),
       ),

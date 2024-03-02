@@ -1,11 +1,13 @@
-import 'package:fals/features/Chat/ChatPage.dart';
-import 'package:fals/features/news/screens/home/home.dart';
+import 'package:fals/features/news/screens/home/widgets/Home.dart';
 import 'package:fals/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:fals/features/Chat/ChatPage.dart';
 import 'package:fals/features/BookMarket/bookMarket.dart';
 
+//lib\features\Profil\profile_screen.dart
+import 'package:fals/features/Profil/profile_screen.dart';
 
 
 class BottomNavigationMenu extends StatelessWidget {
@@ -56,11 +58,9 @@ class NavigationController extends GetxController {
 
 //Change the containers with the screens.
   final screens = [
-    const HomeScreen(),
-     ChatPage(),
+    Home(),
+    ChatPage(),
     const BookMarket(),
-    Container(
-      color: Colors.yellow,
-    )
+    const ProfileScreen(),
   ];
 }

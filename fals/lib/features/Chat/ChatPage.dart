@@ -112,7 +112,7 @@ class _ChatPageState extends State<ChatPage> {
             padding: EdgeInsets.all(12.0),
             child: Text(
               message['message']!,
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Color.fromARGB(255, 230, 115, 197)),
             ),
           ),
         ],

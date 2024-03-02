@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+
+import 'home/widgets/PageLayout.dart';
+
+
 class NewsArticlePage extends StatefulWidget {
   @override
   NewsArticlePageState createState() => NewsArticlePageState();
@@ -39,7 +43,26 @@ class NewsArticlePageState extends State<NewsArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create News Article'),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text('Create News Article'),
+            ),
+            IconButton(
+              icon: Icon(Icons.more_vert), // Icône de menu déroulant
+              onPressed: () {
+                // Navigation vers la page PageLayout
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PageLayout()),
+                );
+              },
+            ),
+          ],
+        ),
+        actions: [
+          // Éventuelles actions supplémentaires sur l'app bar
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -91,7 +114,7 @@ class NewsArticlePageState extends State<NewsArticlePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add code here to publish the news article
+          // Ajoutez ici le code pour publier l'article de presse
         },
         child: Text('Publish'),
       ),
