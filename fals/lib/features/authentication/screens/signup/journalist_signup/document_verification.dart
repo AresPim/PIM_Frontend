@@ -13,8 +13,7 @@ class DocumentVerificationPage extends StatefulWidget {
       _DocumentVerificationPageState();
 }
 
-class _DocumentVerificationPageState
-    extends State<DocumentVerificationPage> {
+class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
   String selectedDocument = 'Passport';
   String selectedCard = 'Visa';
   File? pickedImage;
@@ -88,8 +87,7 @@ class _DocumentVerificationPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
-                    decoration: InputDecoration(
-                        labelText: 'Passport Number'),
+                    decoration: InputDecoration(labelText: 'Passport Number'),
                   ),
                   SizedBox(height: 16.0),
                   Text('Upload Passport Image:'),
@@ -105,28 +103,24 @@ class _DocumentVerificationPageState
                       ),
                       child: pickedImage != null
                           ? Image.file(
-                        File(pickedImage!.path),
-                        fit: BoxFit.cover,
-                      )
+                              File(pickedImage!.path),
+                              fit: BoxFit.cover,
+                            )
                           : Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Icon(Icons.camera),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10.0),
+                                    child: Icon(Icons.camera),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text('Pick an image'),
+                                ],
+                              ),
                             ),
-                            SizedBox(width: 8),
-                            Text('Pick an image'),
-                          ],
-                        ),
-                      ),
                     ),
                   ),
-
-
-
                 ],
               ),
             if (selectedDocument == 'ID Card')
@@ -134,8 +128,8 @@ class _DocumentVerificationPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
-                    decoration: InputDecoration(
-                        labelText: 'National ID Card Number'),
+                    decoration:
+                        InputDecoration(labelText: 'National ID Card Number'),
                   ),
                   SizedBox(height: 16.0),
                   Text('Upload Image of ID Card:'),
@@ -151,28 +145,24 @@ class _DocumentVerificationPageState
                       ),
                       child: pickedImage != null
                           ? Image.file(
-                        File(pickedImage!.path),
-                        fit: BoxFit.cover,
-                      )
+                              File(pickedImage!.path),
+                              fit: BoxFit.cover,
+                            )
                           : Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Icon(Icons.camera),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10.0),
+                                    child: Icon(Icons.camera),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text('Pick an image'),
+                                ],
+                              ),
                             ),
-                            SizedBox(width: 8),
-                            Text('Pick an image'),
-                          ],
-                        ),
-                      ),
                     ),
                   ),
-
-
-
                 ],
               ),
             SizedBox(height: 32.0),
@@ -202,7 +192,6 @@ class _DocumentVerificationPageState
           ElevatedButton(
             onPressed: () {
               Get.to(() => EditCardScreen());
-
             },
             child: Text('Edit'),
           ),
@@ -210,6 +199,4 @@ class _DocumentVerificationPageState
       ),
     );
   }
-
-
 }
