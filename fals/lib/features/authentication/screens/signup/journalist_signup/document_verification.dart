@@ -1,11 +1,18 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:fals/features/authentication/screens/signup/journalist_signup/edit_card.dart';
+import 'package:fals/features/authentication/screens/signup/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../../utils/constants/colors.dart';
+
+import 'package:http/http.dart' as http;
+
+final url = 'http://192.168.1.20:9090/';
+final verifDoc = url + 'journalistVerification';
 
 class DocumentVerificationPage extends StatefulWidget {
   @override
@@ -14,9 +21,13 @@ class DocumentVerificationPage extends StatefulWidget {
 }
 
 class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
+  TextEditingController tfDocNmbr = TextEditingController();
+
   String selectedDocument = 'Passport';
   String selectedCard = 'Visa';
   File? pickedImage;
+
+  bool _isNotValidate = false;
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -30,11 +41,41 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
     });
   }
 
+  void AddDoc() async {
+    if (tfDocNmbr.text.isNotEmpty) {
+      var reqbody = {
+        'userId': "65cc45fec23257fc597de949",
+        'documentNumber': tfDocNmbr.text,
+        'documentType': selectedDocument,
+      };
+      var response = await http.post(Uri.parse(verifDoc),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(reqbody));
+      print(response);
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Document Verification'),
+        actions: [
+          IconButton(
+            onPressed: () => {
+              AddDoc(),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignUpScreen()),
+              )
+            },
+            icon: Icon(Icons.check),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -68,11 +109,11 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        selectedDocument = 'ID Card';
+                        selectedDocument = 'IDCard';
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedDocument == 'ID Card'
+                      backgroundColor: selectedDocument == 'IDCard'
                           ? Colors.blue
                           : Colors.grey,
                     ),
@@ -87,6 +128,7 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
+                    controller: tfDocNmbr,
                     decoration: InputDecoration(labelText: 'Passport Number'),
                   ),
                   SizedBox(height: 16.0),
@@ -123,11 +165,12 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
                   ),
                 ],
               ),
-            if (selectedDocument == 'ID Card')
+            if (selectedDocument == 'IDCard')
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
+                    controller: tfDocNmbr,
                     decoration:
                         InputDecoration(labelText: 'National ID Card Number'),
                   ),
