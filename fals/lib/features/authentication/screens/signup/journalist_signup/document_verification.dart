@@ -11,10 +11,22 @@ import '../../../../../utils/constants/colors.dart';
 
 import 'package:http/http.dart' as http;
 
-final url = 'http://192.168.1.20:9090/';
+final url = 'http://192.168.1.26:9090/';
 final verifDoc = url + 'journalistVerification';
 
 class DocumentVerificationPage extends StatefulWidget {
+  final String? cardNumber;
+  final String? cardOwner;
+  final String? expirationDate;
+  final String? cvv;
+
+  DocumentVerificationPage({
+    this.cardNumber,
+    this.cardOwner,
+    this.expirationDate,
+    this.cvv,
+  });
+
   @override
   _DocumentVerificationPageState createState() =>
       _DocumentVerificationPageState();
@@ -22,6 +34,8 @@ class DocumentVerificationPage extends StatefulWidget {
 
 class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
   TextEditingController tfDocNmbr = TextEditingController();
+
+  Map<String, String> cardDetails = {};
 
   String selectedDocument = 'Passport';
   String selectedCard = 'Visa';
@@ -47,6 +61,12 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
         'userId': "65cc45fec23257fc597de949",
         'documentNumber': tfDocNmbr.text,
         'documentType': selectedDocument,
+        'cardDetails': {
+          'cardNumber': widget.cardNumber,
+          'cardOwner': widget.cardOwner,
+          'expirationDate': widget.expirationDate,
+          'cvv': widget.cvv,
+        },
       };
       var response = await http.post(Uri.parse(verifDoc),
           headers: {"Content-Type": "application/json"},
@@ -218,6 +238,46 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
             buildCreditCardRow('Mastercard'),
             buildCreditCardRow('PayPal'),
             buildCreditCardRow('Apple Pay'),
+            //submit
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  AddDoc();
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50.0),
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xFF74069A),
+                        Color(0xFFFF8086),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: double.infinity,
+                      minHeight: 50,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

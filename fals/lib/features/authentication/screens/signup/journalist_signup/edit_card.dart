@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 import 'dart:io';
 
-final url = 'http://192.168.0.185:9090/';
+final url = 'http://192.168.1.26:9090/';
 final cardEdit = url + 'cardDetails';
 
 class EditCardScreen extends StatefulWidget {
@@ -23,31 +23,6 @@ class _EditCardScreenState extends State<EditCardScreen> {
   TextEditingController tfCvv = TextEditingController();
 
   final _formKey = GlobalKey<FormState>(); // Clé globale pour le formulaire
-
-  bool _isNotValidate = false;
-
-  void EditCard() async {
-    if (tfCardNmbr.text.isNotEmpty &&
-        tfCardOwner.text.isNotEmpty &&
-        tfExpDate.text.isNotEmpty &&
-        tfCvv.text.isNotEmpty) {
-      var reqbody = {
-        'userId': "65cc45fec23257fc597de949",
-        'cardNumber': tfCardNmbr.text,
-        'cardOwner': tfCardOwner.text,
-        'expirationDate': tfExpDate.text,
-        'cvv': tfCvv.text,
-      };
-      var response = await http.post(Uri.parse(cardEdit),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(reqbody));
-      print(response);
-    } else {
-      setState(() {
-        _isNotValidate = true;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +39,16 @@ class _EditCardScreenState extends State<EditCardScreen> {
                 // Si le formulaire est valide, effectuez l'action
                 _formKey.currentState!.save(); // Sauvegarde les champs de texte
 
-                EditCard();
-                Navigator.push(
-                  context,
+                //EditCard();
+                Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => DocumentVerificationPage()),
+                    builder: (context) => DocumentVerificationPage(
+                      cardNumber: tfCardNmbr.text,
+                      cardOwner: tfCardOwner.text,
+                      expirationDate: tfExpDate.text,
+                      cvv: tfCvv.text,
+                    ),
+                  ),
                 );
               }
             },
@@ -192,3 +172,30 @@ class _EditCardScreenState extends State<EditCardScreen> {
     );
   }
 }
+
+/**
+ *   bool _isNotValidate = false;
+
+ *   void EditCard() async {
+    if (tfCardNmbr.text.isNotEmpty &&
+        tfCardOwner.text.isNotEmpty &&
+        tfExpDate.text.isNotEmpty &&
+        tfCvv.text.isNotEmpty) {
+      var reqbody = {
+        'userId': "65cc45fec23257fc597de949",
+        'cardNumber': tfCardNmbr.text,
+        'cardOwner': tfCardOwner.text,
+        'expirationDate': tfExpDate.text,
+        'cvv': tfCvv.text,
+      };
+      var response = await http.post(Uri.parse(cardEdit),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(reqbody));
+      print(response);
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
+ */

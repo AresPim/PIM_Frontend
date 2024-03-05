@@ -10,12 +10,14 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../journalist_signup/document_verification.dart';
+import '../journalist_signup/edit_card.dart';
 
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
-final url = 'http://192.168.0.185:9090/';
+final url = 'http://192.168.1.26:9090/';
 final auth = url + 'auth/signup';
 
 class SignUpForm extends StatefulWidget {
@@ -40,7 +42,7 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _isNotValidate = false;
 
   final _formKey = GlobalKey<FormState>(); // Clé globale pour le formulaire
-  List<String> genderOptions = ['male', 'female']; // Liste des options de genre
+  List<String> genderOptions = ['male', 'female'];
 
   void signup() async {
     if (tfemail.text.isNotEmpty &&
@@ -58,6 +60,36 @@ class _SignUpFormState extends State<SignUpForm> {
         "firstName": tffirstname.text,
         "lastName": tflastname.text,
         "gender": gender, // Ajoutez le genre au corps de la requête
+        "role": "Simple User",
+      };
+      var response = await http.post(Uri.parse(auth),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(reqbody));
+      print(response);
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
+
+  void signupJournalist() async {
+    if (tfemail.text.isNotEmpty &&
+        tfpassword.text.isNotEmpty &&
+        tffirstname.text.isNotEmpty &&
+        tfusername.text.isNotEmpty &&
+        tflastname.text.isNotEmpty &&
+        tfconfirmpwd.text == tfpassword.text &&
+        tfphonenmbr.text.isNotEmpty) {
+      var reqbody = {
+        "username": tfusername.text,
+        "email": tfemail.text,
+        "phoneNumber": tfphonenmbr.text,
+        "password": tfpassword.text,
+        "firstName": tffirstname.text,
+        "lastName": tflastname.text,
+        "gender": gender, // Ajoutez le genre au corps de la requête
+        "role": "Journalist",
       };
       var response = await http.post(Uri.parse(auth),
           headers: {"Content-Type": "application/json"},
@@ -73,6 +105,7 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
+    //final _DocumentVerificationPageState = _DocumentVerificationPageState();
 
     return Form(
       key: _formKey,
@@ -250,7 +283,7 @@ class _SignUpFormState extends State<SignUpForm> {
             child: ElevatedButton(
               onPressed: () {
                 if (isJournalist) {
-                  // If the user is a journalist, navigate to DocumentVerification screen
+                  signupJournalist();
                   Get.to(() => DocumentVerificationPage());
                 } else {
                   // Valider le formulaire avant de soumettre
