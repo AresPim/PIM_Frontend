@@ -1,123 +1,99 @@
+import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 
+import 'consts.dart';
+
 class ChatPage extends StatefulWidget {
+  const ChatPage({super.key});
+
   @override
-  _ChatPageState createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final TextEditingController _textController = TextEditingController();
-  final List<Map<String, String>> _messages = [];
+  final _openAI = OpenAI.instance.build(
+    token: OPENAI_API_KEY,
+    baseOption: HttpSetup(
+      receiveTimeout: const Duration(
+        seconds: 5,
+      ),
+    ),
+    enableLog: true,
+  );
 
-  void _sendMessage(String message) {
-    setState(() {
-      _messages.add({'sender': 'user', 'message': message});
-    });
-    _textController.clear();
-  }
+  final ChatUser _currentUser =
+  ChatUser(id: '1', firstName: 'Saif', lastName: 'Yahyaoui');
+
+  final ChatUser _gptChatUser =
+  ChatUser(id: '2', firstName: 'FA', lastName: 'LS');
+
+  List<ChatMessage> _messages = <ChatMessage>[];
+  List<ChatUser> _typingUsers = <ChatUser>[];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            onPressed: () {
-              // Ajoutez ici la logique pour afficher l'historique du chat
-              // par exemple, en naviguant vers une nouvelle page ou en affichant un dialogue
-            },
-          ),
-        ],
+
+        title: const Text(
+          'FALS Chat',
+
+        ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _messages.length,
-              itemBuilder: (BuildContext context, int index) {
-                final message = _messages[index];
-                return message['sender'] == 'user'
-                    ? _buildUserMessage(message)
-                    : _buildChatGPTMessage(message);
-              },
+      body: DashChat(
+          currentUser: _currentUser,
+          typingUsers: _typingUsers,
+          messageOptions: const MessageOptions(
+            currentUserContainerColor: Colors.black,
+            containerColor: Color.fromRGBO(
+              0,
+              166,
+              126,
+              1,
             ),
+            textColor: Colors.black,
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textController,
-                    decoration: InputDecoration(
-                      labelText: 'Enter your message...',
-                      contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                    ),
-                    textAlignVertical: TextAlignVertical.center,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    if (_textController.text.isNotEmpty) {
-                      _sendMessage(_textController.text);
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 100), // Ajout d'un espace de 100 pixels
-        ],
-      ),
+          onSend: (ChatMessage m) {
+            getChatResponse(m);
+          },
+          messages: _messages),
     );
   }
 
-  Widget _buildUserMessage(Map<String, String> message) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.blue[100],
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            padding: EdgeInsets.all(12.0),
-            child: Text(
-              message['message']!,
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-        ],
-      ),
+  Future<void> getChatResponse(ChatMessage m) async {
+    setState(() {
+      _messages.insert(0, m);
+      _typingUsers.add(_gptChatUser);
+    });
+    List<Messages> _messagesHistory = _messages.reversed.map((m) {
+      if (m.user == _currentUser) {
+        return Messages(role: Role.user, content: m.text);
+      } else {
+        return Messages(role: Role.assistant, content: m.text);
+      }
+    }).toList();
+    final request = ChatCompleteText(
+      model: GptTurbo0301ChatModel(),
+      messages: _messagesHistory,
+      maxToken: 200,
     );
-  }
-
-  Widget _buildChatGPTMessage(Map<String, String> message) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            padding: EdgeInsets.all(12.0),
-            child: Text(
-              message['message']!,
-              style: TextStyle(color: Color.fromARGB(255, 230, 115, 197)),
-            ),
-          ),
-        ],
-      ),
-    );
+    final response = await _openAI.onChatCompletion(request: request);
+    for (var element in response!.choices) {
+      if (element.message != null) {
+        setState(() {
+          _messages.insert(
+            0,
+            ChatMessage(
+                user: _gptChatUser,
+                createdAt: DateTime.now(),
+                text: element.message!.content),
+          );
+        });
+      }
+    }
+    setState(() {
+      _typingUsers.remove(_gptChatUser);
+    });
   }
 }
-

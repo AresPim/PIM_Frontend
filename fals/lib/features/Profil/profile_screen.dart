@@ -76,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 1.0),
                         Text(
-                          'Wilson Franci',
+                          'Saif Yahyaoui',
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
@@ -85,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 8.0),
                         Text(
-                          'wilsonfranci',
+                          'saif.yah',
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,

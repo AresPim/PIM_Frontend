@@ -1,6 +1,5 @@
 import 'package:fals/features/authentication/screens/login/login.dart';
 import 'package:fals/features/authentication/screens/signup/verify_email.dart';
-import 'package:fals/features/authentication/screens/signup/widgets/signup_radio_button.dart';
 import 'package:fals/features/authentication/screens/signup/widgets/terms_conditions.dart';
 import 'package:fals/utils/constants/sizes.dart';
 import 'package:fals/utils/constants/text_strings.dart';
@@ -10,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../journalist_signup/document_verification.dart';
-import '../journalist_signup/edit_card.dart';
 
 import 'dart:convert';
 
@@ -34,9 +32,9 @@ class _SignUpFormState extends State<SignUpForm> {
   TextEditingController tfemail = TextEditingController();
   TextEditingController tfphonenmbr = TextEditingController();
   TextEditingController tfpassword = TextEditingController();
-  TextEditingController tffirstname = TextEditingController();
-  TextEditingController tflastname = TextEditingController();
-  TextEditingController tfconfirmpwd = TextEditingController();
+  TextEditingController tffirstName = TextEditingController();
+  TextEditingController tflastName = TextEditingController();
+  TextEditingController tfConfirmPassword = TextEditingController();
 
   bool _isNotValidate = false;
 
@@ -46,47 +44,68 @@ class _SignUpFormState extends State<SignUpForm> {
   void signup() async {
     if (tfemail.text.isNotEmpty &&
         tfpassword.text.isNotEmpty &&
-        tffirstname.text.isNotEmpty &&
+        tfpassword.text == tfConfirmPassword.text &&
         tfusername.text.isNotEmpty &&
-        tflastname.text.isNotEmpty &&
-        tfconfirmpwd.text == tfpassword.text &&
-        tfphonenmbr.text.isNotEmpty) {
+        tffirstName.text.isNotEmpty &&
+        tflastName.text.isNotEmpty &&
+        tfphonenmbr.text.isNotEmpty &&
+        gender != null) {
       var reqbody = {
         "username": tfusername.text,
+        "firstName": tffirstName.text,
+        "lastName": tflastName.text,
         "email": tfemail.text,
         "phoneNumber": tfphonenmbr.text,
         "password": tfpassword.text,
-        "firstName": tffirstname.text,
-        "lastName": tflastname.text,
-        "gender": gender, // Ajoutez le genre au corps de la requête
-        "role": "Simple User",
+        "gender": gender!.toLowerCase(),
       };
-      var response = await http.post(Uri.parse(auth),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(reqbody));
-      print(response);
+      var response = await http.post(
+        Uri.parse(auth),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(reqbody),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful signup
+        print("Selected Gender: $gender");
+        Get.to(() => VerifyEmailScreen());
+      } else {
+        // Unsuccessful signup
+        print(response);
+        print("Signup failed. Status code: ${response.statusCode}");
+        print("Error message: ${response.body}");
+
+        // Show snackbar with error message
+        Get.snackbar(
+          'Signup Failed',
+          'An error occurred during signup. Please try again.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
     } else {
-      setState(() {
-        _isNotValidate = true;
-      });
+      // Form validation failed
+      setState(() {});
     }
   }
+
 
   void signupJournalist() async {
     if (tfemail.text.isNotEmpty &&
         tfpassword.text.isNotEmpty &&
-        tffirstname.text.isNotEmpty &&
+        tffirstName.text.isNotEmpty &&
         tfusername.text.isNotEmpty &&
-        tflastname.text.isNotEmpty &&
-        tfconfirmpwd.text == tfpassword.text &&
+        tflastName.text.isNotEmpty &&
+        tfConfirmPassword.text == tfpassword.text &&
         tfphonenmbr.text.isNotEmpty) {
       var reqbody = {
         "username": tfusername.text,
         "email": tfemail.text,
         "phoneNumber": tfphonenmbr.text,
         "password": tfpassword.text,
-        "firstName": tffirstname.text,
-        "lastName": tflastname.text,
+        "firstName": tffirstName.text,
+        "lastName": tflastName.text,
         "gender": gender, // Ajoutez le genre au corps de la requête
         "role": "Journalist",
       };
@@ -155,7 +174,7 @@ class _SignUpFormState extends State<SignUpForm> {
             children: [
               Expanded(
                 child: TextFormField(
-                  controller: tffirstname,
+                  controller: tffirstName,
                   expands: false,
                   decoration: const InputDecoration(
                     labelText: TTexts.firstName,
@@ -165,7 +184,7 @@ class _SignUpFormState extends State<SignUpForm> {
               const SizedBox(width: 10.0),
               Expanded(
                 child: TextFormField(
-                  controller: tflastname,
+                  controller: tflastName,
                   decoration: const InputDecoration(
                     labelText: TTexts.lastName,
                   ),
@@ -225,7 +244,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
           // Confirm Password
           TextFormField(
-            controller: tfconfirmpwd,
+            controller: tfConfirmPassword,
             obscureText: true,
             decoration: const InputDecoration(
               suffixIcon: Icon(Iconsax.eye_slash),
