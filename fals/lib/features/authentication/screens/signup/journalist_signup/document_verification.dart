@@ -1,23 +1,47 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:fals/features/authentication/screens/signup/journalist_signup/edit_card.dart';
+import 'package:fals/features/authentication/screens/signup/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../../utils/constants/colors.dart';
 
+import 'package:http/http.dart' as http;
+
+final url = 'http://192.168.1.26:9090/';
+final verifDoc = url + 'journalistVerification';
+
 class DocumentVerificationPage extends StatefulWidget {
+  final String? cardNumber;
+  final String? cardOwner;
+  final String? expirationDate;
+  final String? cvv;
+
+  DocumentVerificationPage({
+    this.cardNumber,
+    this.cardOwner,
+    this.expirationDate,
+    this.cvv,
+  });
+
   @override
   _DocumentVerificationPageState createState() =>
       _DocumentVerificationPageState();
 }
 
-class _DocumentVerificationPageState
-    extends State<DocumentVerificationPage> {
+class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
+  TextEditingController tfDocNmbr = TextEditingController();
+
+  Map<String, String> cardDetails = {};
+
   String selectedDocument = 'Passport';
   String selectedCard = 'Visa';
   File? pickedImage;
+
+  bool _isNotValidate = false;
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -31,11 +55,47 @@ class _DocumentVerificationPageState
     });
   }
 
+  void AddDoc() async {
+    if (tfDocNmbr.text.isNotEmpty) {
+      var reqbody = {
+        'userId': "65cc45fec23257fc597de949",
+        'documentNumber': tfDocNmbr.text,
+        'documentType': selectedDocument,
+        'cardDetails': {
+          'cardNumber': widget.cardNumber,
+          'cardOwner': widget.cardOwner,
+          'expirationDate': widget.expirationDate,
+          'cvv': widget.cvv,
+        },
+      };
+      var response = await http.post(Uri.parse(verifDoc),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(reqbody));
+      print(response);
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Document Verification'),
+        actions: [
+          IconButton(
+            onPressed: () => {
+              AddDoc(),
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SignUpScreen()),
+              )
+            },
+            icon: Icon(Icons.check),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -69,11 +129,11 @@ class _DocumentVerificationPageState
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        selectedDocument = 'ID Card';
+                        selectedDocument = 'IDCard';
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedDocument == 'ID Card'
+                      backgroundColor: selectedDocument == 'IDCard'
                           ? Colors.blue
                           : Colors.grey,
                     ),
@@ -88,8 +148,8 @@ class _DocumentVerificationPageState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
-                    decoration: InputDecoration(
-                        labelText: 'Passport Number'),
+                    controller: tfDocNmbr,
+                    decoration: InputDecoration(labelText: 'Passport Number'),
                   ),
                   SizedBox(height: 16.0),
                   Text('Upload Passport Image:'),
@@ -105,37 +165,34 @@ class _DocumentVerificationPageState
                       ),
                       child: pickedImage != null
                           ? Image.file(
-                        File(pickedImage!.path),
-                        fit: BoxFit.cover,
-                      )
+                              File(pickedImage!.path),
+                              fit: BoxFit.cover,
+                            )
                           : Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Icon(Icons.camera),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10.0),
+                                    child: Icon(Icons.camera),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text('Pick an image'),
+                                ],
+                              ),
                             ),
-                            SizedBox(width: 8),
-                            Text('Pick an image'),
-                          ],
-                        ),
-                      ),
                     ),
                   ),
-
-
-
                 ],
               ),
-            if (selectedDocument == 'ID Card')
+            if (selectedDocument == 'IDCard')
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
-                    decoration: InputDecoration(
-                        labelText: 'National ID Card Number'),
+                    controller: tfDocNmbr,
+                    decoration:
+                        InputDecoration(labelText: 'National ID Card Number'),
                   ),
                   SizedBox(height: 16.0),
                   Text('Upload Image of ID Card:'),
@@ -151,28 +208,24 @@ class _DocumentVerificationPageState
                       ),
                       child: pickedImage != null
                           ? Image.file(
-                        File(pickedImage!.path),
-                        fit: BoxFit.cover,
-                      )
+                              File(pickedImage!.path),
+                              fit: BoxFit.cover,
+                            )
                           : Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10.0),
-                              child: Icon(Icons.camera),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10.0),
+                                    child: Icon(Icons.camera),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text('Pick an image'),
+                                ],
+                              ),
                             ),
-                            SizedBox(width: 8),
-                            Text('Pick an image'),
-                          ],
-                        ),
-                      ),
                     ),
                   ),
-
-
-
                 ],
               ),
             SizedBox(height: 32.0),
@@ -185,6 +238,46 @@ class _DocumentVerificationPageState
             buildCreditCardRow('Mastercard'),
             buildCreditCardRow('PayPal'),
             buildCreditCardRow('Apple Pay'),
+            //submit
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  AddDoc();
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                  ),
+                  padding: EdgeInsets.zero,
+                ),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50.0),
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xFF74069A),
+                        Color(0xFFFF8086),
+                      ],
+                    ),
+                  ),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: double.infinity,
+                      minHeight: 50,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -202,7 +295,6 @@ class _DocumentVerificationPageState
           ElevatedButton(
             onPressed: () {
               Get.to(() => EditCardScreen());
-
             },
             child: Text('Edit'),
           ),
@@ -210,6 +302,4 @@ class _DocumentVerificationPageState
       ),
     );
   }
-
-
 }

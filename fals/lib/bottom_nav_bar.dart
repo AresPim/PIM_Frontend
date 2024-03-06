@@ -3,12 +3,6 @@ import 'package:fals/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:fals/features/Chat/ChatPage.dart';
-import 'package:fals/features/BookMarket/bookMarket.dart';
-
-//lib\features\Profil\profile_screen.dart
-import 'package:fals/features/Profil/profile_screen.dart';
-
 
 class BottomNavigationMenu extends StatelessWidget {
   const BottomNavigationMenu({super.key});
@@ -58,9 +52,15 @@ class NavigationController extends GetxController {
 
 //Change the containers with the screens.
   final screens = [
-   const HomeScreen(),
-    ChatPage(),
-    const BookMarket(),
-    const ProfileScreen(),
+    const HomeScreen(),
+    Container(
+      color: Colors.black,
+    ),
+    Container(
+      color: Colors.red,
+    ),
+    Container(
+      color: Colors.yellow,
+    )
   ];
 }
