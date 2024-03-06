@@ -1,5 +1,6 @@
 import 'package:fals/features/authentication/screens/login/login.dart';
 import 'package:fals/features/authentication/screens/signup/verify_email.dart';
+import 'package:fals/features/authentication/screens/signup/widgets/signup_radio_button.dart';
 import 'package:fals/features/authentication/screens/signup/widgets/terms_conditions.dart';
 import 'package:fals/utils/constants/sizes.dart';
 import 'package:fals/utils/constants/text_strings.dart';
@@ -39,7 +40,6 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _isNotValidate = false;
 
   final _formKey = GlobalKey<FormState>(); // Clé globale pour le formulaire
-  List<String> genderOptions = ['male', 'female'];
 
   void signup() async {
     if (tfemail.text.isNotEmpty &&
@@ -263,32 +263,25 @@ class _SignUpFormState extends State<SignUpForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              for (var option
-              in genderOptions) // Créez un bouton radio pour chaque option
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      gender =
-                          option; // Mettez à jour la valeur de genre sélectionnée
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Radio(
-                        value: option,
-                        groupValue: gender,
-                        onChanged: (value) {
-                          setState(() {
-                            gender = value.toString();
-                          });
-                        },
-                      ),
-                      Text(option[0].toUpperCase() +
-                          option.substring(
-                              1)), // Mettez la première lettre en majuscule
-                    ],
-                  ),
-                ),
+              GradientRadio<String>(
+                value: 'male',
+                groupValue: gender,
+                onChanged: (value) {
+                  setState(() {
+                    gender = value;
+                  });
+                },
+              ),
+              const SizedBox(width: 10.0),
+              GradientRadio<String>(
+                value: 'female',
+                groupValue: gender,
+                onChanged: (value) {
+                  setState(() {
+                    gender = value;
+                  });
+                },
+              ),
             ],
           ),
           const SizedBox(height: 16.0),
