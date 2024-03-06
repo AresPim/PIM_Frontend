@@ -258,7 +258,6 @@ class _SignUpFormState extends State<SignUpForm> {
             },
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
-
           // Gender
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
