@@ -7,11 +7,59 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../password_configuration/forget_password.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<void> loginUser(String email, String password) async {
+  final url = Uri.parse('http://192.168.1.17:9090/auth/signin');
+  try {
+    final response = await http.post(
+      url,
+      body: json.encode({
+        'email': email,
+        'password': password,
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      // Successful login, handle the response
+      final userData = json.decode(response.body);
+      print('User data: $userData');
+
+      // Example: Navigate to the home screen or perform other actions
+      Get.to(() => BottomNavigationMenu());
+    } else if (response.statusCode == 404) {
+      // User not found
+      print('User not found. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+
+      // Example: Show an error message to the user
+      Get.snackbar('Error', 'User not found. Please check your credentials.');
+    } else {
+      // Failed login, handle the error
+      print('Failed to login. Status code: ${response.statusCode}');
+      print('Error message: ${response.body}');
+
+      // Example: Show an error message to the user
+      Get.snackbar('Error', 'Failed to login. Please try again.');
+    }
+  } catch (error) {
+    // Handle other exceptions (e.g., network error)
+    print('Error: $error');
+
+    // Example: Show an error message to the user
+    Get.snackbar(
+      'Error',
+      'An error occurred. Please check your network connection and try again.',
+    );
+  }
+}
 
 class SignUp extends StatelessWidget {
   const SignUp({
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,30 +95,55 @@ class SignUp extends StatelessWidget {
   }
 }
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({
-    super.key,
-  });
+class LoginForm extends StatefulWidget {
+  const LoginForm({Key? key}) : super(key: key);
+
+  @override
+  _LoginFormState createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: TSizes.spaceBtwSections),
         child: Column(
           children: [
             // Username
             TextFormField(
+              controller: emailController,
               decoration: InputDecoration(
-                labelText: TTexts.username,
+                labelText: TTexts.email,
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                }
+                return null;
+              },
             ),
             const SizedBox(height: TSizes.spaceBtwInputFields),
             // Password
             TextFormField(
+              controller: passwordController,
               decoration: InputDecoration(
-                  labelText: TTexts.password,
-                  suffixIcon: Icon(Iconsax.eye_slash)),
+                labelText: TTexts.password,
+                suffixIcon: Icon(Iconsax.eye_slash),
+              ),
+              obscureText: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
             ),
             const SizedBox(height: TSizes.spaceBtwInputFields / 2),
             // Remember me & Forgot password
@@ -116,7 +189,12 @@ class LoginForm extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Get.to(() => const BottomNavigationMenu()),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    // Form is valid, perform login
+                    loginUser(emailController.text, passwordController.text);
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50.0),
@@ -130,18 +208,20 @@ class LoginForm extends StatelessWidget {
                       colors: [
                         Color(0xFF74069A),
                         Color(0xFFFF8086),
-                      ], // Your gradient colors
+                      ],
                     ),
                   ),
                   child: Container(
                     constraints: BoxConstraints(
-                        maxWidth: double.infinity, minHeight: 50),
+                      maxWidth: double.infinity,
+                      minHeight: 50,
+                    ),
                     alignment: Alignment.center,
                     child: Text(
                       TTexts.signIn,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20.0, // Adjust font size as needed
+                        fontSize: 20.0,
                       ),
                     ),
                   ),
