@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../NewsPage.dart';
 import 'ActivityFeed.dart';
+import 'SearchResultsPage.dart'; // Import de la page de résultats de recherche
 
 class Home extends StatelessWidget {
   final List<CategoryItem> categories = [
@@ -16,12 +19,16 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Trending'),
+        title: Text('News'),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              // Ajoutez ici la logique pour le bouton de recherche
+              // Naviguer vers la page de résultats de recherche lorsque l'utilisateur appuie sur l'icône de recherche
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchResultsPage()),
+              );
             },
           ),
           IconButton(
@@ -53,10 +60,14 @@ class Home extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    // Handle "See all" button press
+                    // Navigation vers la page NewsPage lorsque le bouton "Voir tout" est pressé
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => NewsPage()),
+                    );
                   },
                   child: Text(
-                    'See all',
+                    'Voir tout',
                     style: TextStyle(
                       color: Color.fromARGB(255, 233, 150, 208),
                       fontSize: 16,
@@ -116,7 +127,7 @@ class Home extends StatelessWidget {
                             icon: category.icon,
                             label: category.label,
                             onPressed: () {
-                              // Handle category button press
+                              // Gérer l'appui sur le bouton de catégorie
                             },
                           ),
                         ),
@@ -136,16 +147,15 @@ class Home extends StatelessWidget {
                   subtitle: const Text('BBC News Ⓒ 14m ago'),
                   leading: Image.asset('assets/images/content/rs.png'),
                   onTap: () {
-                    // Navigate to the news article details page
+                    // Naviguer vers la page de détails de l'article de presse
                   },
                 ),
-                // Add more news articles as ListTile widgets
+                // Ajouter d'autres articles de presse en tant que widgets ListTile
               ],
             ),
           ),
         ],
       ),
-    
     );
   }
 }

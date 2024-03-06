@@ -20,7 +20,7 @@ class NewsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('News Page'),
+        title: Text('Trending'),
       ),
       body: ListView.builder(
         itemCount: headlines.length,
