@@ -11,7 +11,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<void> loginUser(String email, String password) async {
-  final url = Uri.parse('http://192.168.1.17:9090/auth/signin');
+  final url = Uri.parse('http://192.168.18.221:9090/auth/signin');
   try {
     final response = await http.post(
       url,

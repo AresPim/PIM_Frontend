@@ -15,7 +15,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-final url = 'http://192.168.1.17:9090/';
+final url = 'http://192.168.0.128:9090/';
 final auth = url + 'auth/signup';
 
 class SignUpForm extends StatefulWidget {

@@ -1,5 +1,5 @@
 import 'package:fals/features/Profil/profile_screen.dart';
-import 'package:fals/features/news/screens/home/widgets/Home.dart';
+import 'package:fals/features/news/screens/home/home.dart';
 import 'package:fals/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -57,7 +57,7 @@ class NavigationController extends GetxController {
 
 //Change the containers with the screens.
   final screens = [
-    Home(),
+    HomeScreen(),
     ChatPage(),
     const BookMarket(),
     const ProfileScreen(),

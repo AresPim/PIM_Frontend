@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../../common/widgets/appbar/appbar.dart';
 import '../../../../../common/widgets/notifications/notifications_icon.dart';
+import 'notification.dart';
+import 'search.dart';
 
 class THomeAppBar extends StatelessWidget {
   const THomeAppBar({
@@ -30,7 +34,18 @@ class THomeAppBar extends StatelessWidget {
         ),
       ),
       actions: [
-        NotificationsIcon(onPressed: () {  },)
+        IconButton(
+          icon: Icon(Icons.search,  size: 30),
+
+          onPressed: () {
+            Get.to(() => SearchResultsPage());
+          },
+        ),
+        NotificationsIcon(onPressed:(){ Get.to(() => ActivityFeed());}
+
+          ),
+
+
       ],
     );
   }

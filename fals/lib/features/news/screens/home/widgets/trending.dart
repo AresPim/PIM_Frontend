@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class NewsPage extends StatelessWidget {
+class Trending extends StatelessWidget {
   final List<Map<String, String>> headlines = [
     {"title": "Trending", "image": "assets/images/content/rs.png"},
     {"title": "Verified", "image": "assets/images/content/rr.png"},
@@ -58,7 +58,7 @@ class NewsPage extends StatelessWidget {
                     color: Colors.grey,
                   ),
                 ),
-                Divider(color: Colors.grey.shade300),
+                Divider(color: Colors.grey.shade700),
               ],
             ),
           );

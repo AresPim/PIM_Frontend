@@ -55,7 +55,7 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
     });
   }
 
-  void AddDoc() async {
+  void addDoc() async {
     if (tfDocNmbr.text.isNotEmpty) {
       var reqbody = {
         'userId': "65cc45fec23257fc597de949",
@@ -87,7 +87,7 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
         actions: [
           IconButton(
             onPressed: () => {
-              AddDoc(),
+              addDoc(),
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SignUpScreen()),
@@ -243,7 +243,7 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  AddDoc();
+                  addDoc();
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(

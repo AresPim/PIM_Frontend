@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:timeago/timeago.dart' as timeago;
 
 import 'package:flutter/material.dart';
-import 'package:fals/features/news/screens/NewsArticlePage.dart';
+import 'package:fals/features/Profil/widgets/createNews.dart';
 import 'package:get/get.dart';
-import './EditProfileScreen.dart';
+import 'widgets/editProfile.dart';
 import 'package:http/http.dart' as http;
 
 class ProfileScreen extends StatefulWidget {

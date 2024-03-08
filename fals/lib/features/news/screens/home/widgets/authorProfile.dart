@@ -12,18 +12,8 @@ class _BBCNewsState extends State<BBCNews> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        title: Text(
-          'BBC News Profile',
-          style: TextStyle(color: Colors.black),
-        ),
+
+
         actions: [
           PopupMenuButton(
             itemBuilder: (context) => [

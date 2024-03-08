@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class PageLayout extends StatelessWidget {
+class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Page Layout'),
+        title: Text('Settings'),
       ),
       body: Column(
         children: [

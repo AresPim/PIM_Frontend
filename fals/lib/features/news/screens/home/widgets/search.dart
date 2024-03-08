@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'BBCNews.dart';
+import '../../../../../common/widgets/custom_shapes/containers/search_container.dart';
+import 'authorProfile.dart';
 
 class SearchResultsPage extends StatefulWidget {
   @override
@@ -72,27 +73,17 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          decoration: InputDecoration(
-            hintText: "Search",
-            border: InputBorder.none,
-          ),
-          onChanged: (value) {
-            // Search logic here...
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.cancel),
-            onPressed: () {
-              // Logic to clear the search field
-            },
-          ),
-        ],
+
+
       ),
       body: Column(
         children: [
+          /// Search bar
+          SearchContainer(
+            text: 'Search',
+          ),
           Padding(
+
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -173,7 +164,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
             ),
         ];
       
-        return [];
      case 'Author':
         return [
           for (var newsCategory in newsCategories)
