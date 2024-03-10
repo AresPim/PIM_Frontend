@@ -122,47 +122,50 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
             ),
-            //Latest Section
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Latest',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.to(() => Latest());
-                    },
-                    child: ShaderMask(
-                      blendMode: BlendMode.srcIn,
-                      shaderCallback: (Rect bounds) {
-                        return LinearGradient(
-                          colors: [
-                            Color(0xFF74069A),
-                            Color(0xFFFF8086),
-                          ],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ).createShader(bounds);
-                      },
-                      child: Text(
-                        'See All',
+            ///Latest Section
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Latest',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
                         ),
                       ),
-                    ),
+                      TextButton(
+                        onPressed: () {
+                          Get.to(() => Latest());
+                        },
+                        child: ShaderMask(
+                          blendMode: BlendMode.srcIn,
+                          shaderCallback: (Rect bounds) {
+                            return LinearGradient(
+                              colors: [
+                                Color(0xFF74069A),
+                                Color(0xFFFF8086),
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ).createShader(bounds);
+                          },
+                          child: Text(
+                            'See All',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    ],
                   ),
-
-
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

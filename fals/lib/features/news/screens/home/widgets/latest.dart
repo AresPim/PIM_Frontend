@@ -5,7 +5,7 @@ class Latest extends StatelessWidget {
     {"title": "Trending", "image": "assets/images/content/rs.png"},
     {"title": "Verified", "image": "assets/images/content/rr.png"},
     {
-      "title": "Russian warship: Moskva sinks in Black Sea - BBC News",
+      "title": "Russian warship: Moskovitz sinks in Black Sea - BBC News",
       "image": "assets/images/content/rs.png"
     },
     {"title": "Not Yet Verified", "image": "assets/images/content/rs.png"},

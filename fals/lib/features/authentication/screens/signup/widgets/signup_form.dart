@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../../../utils/constants/api_constants.dart' as url;
 import '../journalist_signup/document_verification.dart';
 
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-final url = 'http://192.168.0.128:9090/';
-final auth = url + 'auth/signup';
+final auth = url.url + 'auth/signup';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({Key? key});

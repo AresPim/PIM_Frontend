@@ -6,12 +6,12 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
-class NewsArticlePage extends StatefulWidget {
+class CreateNews extends StatefulWidget {
   @override
-  NewsArticlePageState createState() => NewsArticlePageState();
+  CreateNewsState createState() => CreateNewsState();
 }
 
-class NewsArticlePageState extends State<NewsArticlePage> {
+class CreateNewsState extends State<CreateNews> {
   String _newsTitle = '';
   File? _pickedImage;
   String _content = ''; // Changed variable name from _newsArticle to _content
@@ -143,6 +143,7 @@ Get.snackbar('Success', 'Post published successfully!');
               SizedBox(height: 16.0),
               TextField(
                 decoration: InputDecoration(
+
                   labelText: 'Content', // Changed from 'News Article' to 'Content'
                 ),
                 onChanged: (value) {

@@ -6,12 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../../../utils/constants/api_constants.dart' as url;
 import '../../password_configuration/forget_password.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+final auth = url.url + 'auth/signin';
 
 Future<void> loginUser(String email, String password) async {
-  final url = Uri.parse('http://192.168.18.221:9090/auth/signin');
+  final url = Uri.parse(auth);
+
   try {
     final response = await http.post(
       url,
