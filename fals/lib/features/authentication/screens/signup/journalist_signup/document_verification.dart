@@ -1,31 +1,28 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:fals/bottom_nav_bar.dart';
 import 'package:fals/features/authentication/screens/signup/journalist_signup/edit_card.dart';
-import 'package:fals/features/authentication/screens/signup/signup.dart';
+import 'package:fals/features/authentication/screens/signup/widgets/signup_form.dart';
+import 'package:fals/features/news/screens/home/widgets/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jaguar_jwt/jaguar_jwt.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../../../../utils/constants/colors.dart';
 
 import 'package:http/http.dart' as http;
 
-final url = 'http://192.168.1.26:9090/';
-final verifDoc = url + 'journalistVerification';
+import 'package:fals/url.dart' as url;
+
+final verifDoc = url.url + 'journalistVerification';
 
 class DocumentVerificationPage extends StatefulWidget {
-  final String? cardNumber;
-  final String? cardOwner;
-  final String? expirationDate;
-  final String? cvv;
+  final String? userId;
 
-  DocumentVerificationPage({
-    this.cardNumber,
-    this.cardOwner,
-    this.expirationDate,
-    this.cvv,
-  });
+  DocumentVerificationPage({this.userId});
 
   @override
   _DocumentVerificationPageState createState() =>
@@ -34,8 +31,6 @@ class DocumentVerificationPage extends StatefulWidget {
 
 class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
   TextEditingController tfDocNmbr = TextEditingController();
-
-  Map<String, String> cardDetails = {};
 
   String selectedDocument = 'Passport';
   String selectedCard = 'Visa';
@@ -58,16 +53,11 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
   void AddDoc() async {
     if (tfDocNmbr.text.isNotEmpty) {
       var reqbody = {
-        'userId': "65cc45fec23257fc597de949",
+        'userId': widget.userId,
         'documentNumber': tfDocNmbr.text,
         'documentType': selectedDocument,
-        'cardDetails': {
-          'cardNumber': widget.cardNumber,
-          'cardOwner': widget.cardOwner,
-          'expirationDate': widget.expirationDate,
-          'cvv': widget.cvv,
-        },
       };
+      //print(widget.userId);
       var response = await http.post(Uri.parse(verifDoc),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(reqbody));
@@ -84,18 +74,6 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Document Verification'),
-        actions: [
-          IconButton(
-            onPressed: () => {
-              AddDoc(),
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SignUpScreen()),
-              )
-            },
-            icon: Icon(Icons.check),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -244,6 +222,7 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
               child: ElevatedButton(
                 onPressed: () {
                   AddDoc();
+                  Get.to(() => BottomNavigationMenu());
                 },
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -294,7 +273,8 @@ class _DocumentVerificationPageState extends State<DocumentVerificationPage> {
           Text('Valid'), // Replace with your logic for validity
           ElevatedButton(
             onPressed: () {
-              Get.to(() => EditCardScreen());
+              //print(widget.userId);
+              Get.to(() => EditCardScreen(userId: widget.userId));
             },
             child: Text('Edit'),
           ),

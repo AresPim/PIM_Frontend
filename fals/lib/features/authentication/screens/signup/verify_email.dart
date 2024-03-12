@@ -9,7 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class VerifyEmailScreen extends StatelessWidget {
-  const VerifyEmailScreen({Key? key});
+  //const VerifyEmailScreen({Key? key});
+
+  final String? userId;
+
+  VerifyEmailScreen({this.userId});
+
+  //use widget.userId
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,10 @@ import '../../../../common/widgets/image_text_widgets/vertical_image_text.dart';
 import '../../../../common/widgets/texts/section_heading.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key});
+  //const HomeScreen({Key? key});
+  final String? userId;
+
+  HomeScreen({this.userId});
 
   @override
   Widget build(BuildContext context) {

@@ -8,17 +8,17 @@ import 'package:fals/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:jaguar_jwt/jaguar_jwt.dart';
 
 import '../journalist_signup/document_verification.dart';
-import '../journalist_signup/edit_card.dart';
 
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:firebase_auth/firebase_auth.dart';
 
-final url = 'http://192.168.1.26:9090/';
-final auth = url + 'auth/signup';
+import 'package:fals/url.dart' as url;
+
+final auth = url.url + 'auth/signup';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({Key? key});
@@ -35,37 +35,109 @@ class _SignUpFormState extends State<SignUpForm> {
   TextEditingController tfemail = TextEditingController();
   TextEditingController tfphonenmbr = TextEditingController();
   TextEditingController tfpassword = TextEditingController();
-  TextEditingController tffirstname = TextEditingController();
-  TextEditingController tflastname = TextEditingController();
-  TextEditingController tfconfirmpwd = TextEditingController();
+  TextEditingController tffirstName = TextEditingController();
+  TextEditingController tflastName = TextEditingController();
+  TextEditingController tfConfirmPassword = TextEditingController();
 
   bool _isNotValidate = false;
 
   final _formKey = GlobalKey<FormState>(); // Clé globale pour le formulaire
-  List<String> genderOptions = ['male', 'female'];
+  String? token;
 
   void signup() async {
     if (tfemail.text.isNotEmpty &&
         tfpassword.text.isNotEmpty &&
-        tffirstname.text.isNotEmpty &&
+        tfpassword.text == tfConfirmPassword.text &&
         tfusername.text.isNotEmpty &&
-        tflastname.text.isNotEmpty &&
-        tfconfirmpwd.text == tfpassword.text &&
+        tffirstName.text.isNotEmpty &&
+        tflastName.text.isNotEmpty &&
+        tfphonenmbr.text.isNotEmpty &&
+        gender != null) {
+      var reqbody = {
+        "username": tfusername.text,
+        "firstName": tffirstName.text,
+        "lastName": tflastName.text,
+        "email": tfemail.text,
+        "phoneNumber": tfphonenmbr.text,
+        "password": tfpassword.text,
+        "gender": gender!.toLowerCase(),
+        //"role": "Simple User",
+      };
+      var response = await http.post(
+        Uri.parse(auth),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(reqbody),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        // Extraire le token du corps de la réponse
+        final receivedToken = responseData as String;
+        // Extraire l'ID de l'utilisateur du token décodé
+        final jwtClaim = verifyJwtHS256Signature(
+            receivedToken, "not-less-than-32-lettres+strong-key");
+        String? userId = jwtClaim.toJson()['userId'];
+        //print('userId : ${userId}');
+        // Assurez-vous que userId n'est pas null avant de naviguer
+        if (userId != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => VerifyEmailScreen(userId: userId),
+            ),
+          );
+        } else {
+          print('userId est null');
+        }
+      } else {
+        print('Erreur lors de la création du compte : ${response.statusCode}');
+      }
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
+
+  void signupSimpleUser() async {
+    if (tfemail.text.isNotEmpty &&
+        tfpassword.text.isNotEmpty &&
+        tffirstName.text.isNotEmpty &&
+        tfusername.text.isNotEmpty &&
+        tflastName.text.isNotEmpty &&
+        tfConfirmPassword.text == tfpassword.text &&
         tfphonenmbr.text.isNotEmpty) {
       var reqbody = {
         "username": tfusername.text,
         "email": tfemail.text,
         "phoneNumber": tfphonenmbr.text,
         "password": tfpassword.text,
-        "firstName": tffirstname.text,
-        "lastName": tflastname.text,
+        "firstName": tffirstName.text,
+        "lastName": tflastName.text,
         "gender": gender, // Ajoutez le genre au corps de la requête
-        "role": "Simple User",
       };
       var response = await http.post(Uri.parse(auth),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(reqbody));
-      print(response);
+
+      if (response.statusCode == 201) {
+        final responseData = json.decode(response.body);
+        final receivedToken = responseData as String;
+        // Extraire l'ID de l'utilisateur du token décodé
+        final jwtClaim = verifyJwtHS256Signature(
+            receivedToken, "not-less-than-32-lettres+strong-key");
+        String? userId = jwtClaim.toJson()['userId'];
+        if (userId != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => VerifyEmailScreen(userId: userId),
+            ),
+          );
+        } else {
+          print('userId est null');
+        }
+      } else {
+        print('Erreur lors de la création du compte : ${response.statusCode}');
+      }
     } else {
       setState(() {
         _isNotValidate = true;
@@ -76,25 +148,47 @@ class _SignUpFormState extends State<SignUpForm> {
   void signupJournalist() async {
     if (tfemail.text.isNotEmpty &&
         tfpassword.text.isNotEmpty &&
-        tffirstname.text.isNotEmpty &&
+        tffirstName.text.isNotEmpty &&
         tfusername.text.isNotEmpty &&
-        tflastname.text.isNotEmpty &&
-        tfconfirmpwd.text == tfpassword.text &&
+        tflastName.text.isNotEmpty &&
+        tfConfirmPassword.text == tfpassword.text &&
         tfphonenmbr.text.isNotEmpty) {
       var reqbody = {
         "username": tfusername.text,
         "email": tfemail.text,
         "phoneNumber": tfphonenmbr.text,
         "password": tfpassword.text,
-        "firstName": tffirstname.text,
-        "lastName": tflastname.text,
+        "firstName": tffirstName.text,
+        "lastName": tflastName.text,
         "gender": gender, // Ajoutez le genre au corps de la requête
         "role": "Journalist",
       };
       var response = await http.post(Uri.parse(auth),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(reqbody));
-      print(response);
+
+      if (response.statusCode == 201) {
+        final responseData = json.decode(response.body);
+        // Extraire le token du corps de la réponse
+        final receivedToken = responseData as String;
+        // Extraire l'ID de l'utilisateur du token décodé
+        final jwtClaim = verifyJwtHS256Signature(
+            receivedToken, "not-less-than-32-lettres+strong-key");
+        String? userId = jwtClaim.toJson()['userId'];
+        //print('userId : ${userId}');
+        // Assurez-vous que userId n'est pas null avant de naviguer
+        if (userId != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => DocumentVerificationPage(userId: userId),
+            ),
+          );
+        } else {
+          print('userId est null');
+        }
+      } else {
+        print('Erreur lors de la création du compte : ${response.statusCode}');
+      }
     } else {
       setState(() {
         _isNotValidate = true;
@@ -156,7 +250,7 @@ class _SignUpFormState extends State<SignUpForm> {
             children: [
               Expanded(
                 child: TextFormField(
-                  controller: tffirstname,
+                  controller: tffirstName,
                   expands: false,
                   decoration: const InputDecoration(
                     labelText: TTexts.firstName,
@@ -166,7 +260,7 @@ class _SignUpFormState extends State<SignUpForm> {
               const SizedBox(width: 10.0),
               Expanded(
                 child: TextFormField(
-                  controller: tflastname,
+                  controller: tflastName,
                   decoration: const InputDecoration(
                     labelText: TTexts.lastName,
                   ),
@@ -226,7 +320,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
           // Confirm Password
           TextFormField(
-            controller: tfconfirmpwd,
+            controller: tfConfirmPassword,
             obscureText: true,
             decoration: const InputDecoration(
               suffixIcon: Icon(Iconsax.eye_slash),
@@ -240,37 +334,29 @@ class _SignUpFormState extends State<SignUpForm> {
             },
           ),
           const SizedBox(height: TSizes.spaceBtwInputFields),
-
           // Gender
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              for (var option
-                  in genderOptions) // Créez un bouton radio pour chaque option
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      gender =
-                          option; // Mettez à jour la valeur de genre sélectionnée
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Radio(
-                        value: option,
-                        groupValue: gender,
-                        onChanged: (value) {
-                          setState(() {
-                            gender = value.toString();
-                          });
-                        },
-                      ),
-                      Text(option[0].toUpperCase() +
-                          option.substring(
-                              1)), // Mettez la première lettre en majuscule
-                    ],
-                  ),
-                ),
+              GradientRadio<String>(
+                value: 'male',
+                groupValue: gender,
+                onChanged: (value) {
+                  setState(() {
+                    gender = value;
+                  });
+                },
+              ),
+              const SizedBox(width: 10.0),
+              GradientRadio<String>(
+                value: 'female',
+                groupValue: gender,
+                onChanged: (value) {
+                  setState(() {
+                    gender = value;
+                  });
+                },
+              ),
             ],
           ),
           const SizedBox(height: 16.0),
@@ -283,15 +369,10 @@ class _SignUpFormState extends State<SignUpForm> {
             child: ElevatedButton(
               onPressed: () {
                 if (isJournalist) {
-                  signupJournalist();
-                  Get.to(() => DocumentVerificationPage());
-                } else {
                   // Valider le formulaire avant de soumettre
-                  if (_formKey.currentState!.validate()) {
-                    signup();
-                    // If the user is not a journalist, navigate to VerifyEmailScreen
-                    Get.to(() => VerifyEmailScreen());
-                  }
+                  signupJournalist();
+                } else {
+                  signupSimpleUser();
                 }
               },
               style: ElevatedButton.styleFrom(

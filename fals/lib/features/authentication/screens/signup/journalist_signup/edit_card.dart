@@ -7,11 +7,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 import 'dart:io';
+import 'package:fals/url.dart' as url;
 
-final url = 'http://192.168.1.26:9090/';
-final cardEdit = url + 'cardDetails';
+final cardEdit = url.url + 'cardDetails';
 
 class EditCardScreen extends StatefulWidget {
+  final String? userId;
+
+  EditCardScreen({this.userId});
+
   @override
   _EditCardScreenState createState() => _EditCardScreenState();
 }
@@ -23,6 +27,31 @@ class _EditCardScreenState extends State<EditCardScreen> {
   TextEditingController tfCvv = TextEditingController();
 
   final _formKey = GlobalKey<FormState>(); // Clé globale pour le formulaire
+
+  bool _isNotValidate = false;
+
+  void EditCard() async {
+    if (tfCardNmbr.text.isNotEmpty &&
+        tfCardOwner.text.isNotEmpty &&
+        tfExpDate.text.isNotEmpty &&
+        tfCvv.text.isNotEmpty) {
+      var reqbody = {
+        'userId': widget.userId,
+        'cardNumber': tfCardNmbr.text,
+        'cardOwner': tfCardOwner.text,
+        'expirationDate': tfExpDate.text,
+        'cvv': tfCvv.text,
+      };
+      var response = await http.post(Uri.parse(cardEdit),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(reqbody));
+      print(response);
+    } else {
+      setState(() {
+        _isNotValidate = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +68,11 @@ class _EditCardScreenState extends State<EditCardScreen> {
                 // Si le formulaire est valide, effectuez l'action
                 _formKey.currentState!.save(); // Sauvegarde les champs de texte
 
-                //EditCard();
+                EditCard();
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => DocumentVerificationPage(
-                      cardNumber: tfCardNmbr.text,
-                      cardOwner: tfCardOwner.text,
-                      expirationDate: tfExpDate.text,
-                      cvv: tfCvv.text,
-                    ),
+                    builder: (context) =>
+                        DocumentVerificationPage(userId: widget.userId),
                   ),
                 );
               }
@@ -172,30 +197,3 @@ class _EditCardScreenState extends State<EditCardScreen> {
     );
   }
 }
-
-/**
- *   bool _isNotValidate = false;
-
- *   void EditCard() async {
-    if (tfCardNmbr.text.isNotEmpty &&
-        tfCardOwner.text.isNotEmpty &&
-        tfExpDate.text.isNotEmpty &&
-        tfCvv.text.isNotEmpty) {
-      var reqbody = {
-        'userId': "65cc45fec23257fc597de949",
-        'cardNumber': tfCardNmbr.text,
-        'cardOwner': tfCardOwner.text,
-        'expirationDate': tfExpDate.text,
-        'cvv': tfCvv.text,
-      };
-      var response = await http.post(Uri.parse(cardEdit),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(reqbody));
-      print(response);
-    } else {
-      setState(() {
-        _isNotValidate = true;
-      });
-    }
-  }
- */

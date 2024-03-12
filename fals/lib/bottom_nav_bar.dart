@@ -1,16 +1,25 @@
-import 'package:fals/features/news/screens/home/home.dart';
+import 'package:fals/features/Profil/profile_screen.dart';
+import 'package:fals/features/Profil/profile_screen_SimpleUser.dart';
+import 'package:fals/features/news/screens/home/widgets/Home.dart';
 import 'package:fals/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+
+import 'features/BookMarket/bookMarket.dart';
+import 'features/Chat/ChatPage.dart';
 
 class BottomNavigationMenu extends StatelessWidget {
-  const BottomNavigationMenu({super.key});
+  //const BottomNavigationMenu({super.key});
+  final String? token;
+
+  BottomNavigationMenu({this.token});
+
+  final controller = Get.put(NavigationController());
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(NavigationController());
-
     return Scaffold(
       extendBody: true,
       bottomNavigationBar: Obx(
@@ -42,7 +51,8 @@ class BottomNavigationMenu extends StatelessWidget {
           ),
         ),
       ),
-      body: Obx(() => controller.screens[controller.selectedIndex.value]),
+      body:
+          Obx(() => controller.screens[controller.selectedIndex.value](token)),
     );
   }
 }
@@ -52,15 +62,9 @@ class NavigationController extends GetxController {
 
 //Change the containers with the screens.
   final screens = [
-    const HomeScreen(),
-    Container(
-      color: Colors.black,
-    ),
-    Container(
-      color: Colors.red,
-    ),
-    Container(
-      color: Colors.yellow,
-    )
+    (String? token) => Home(token: token),
+    (String? token) => ChatPage(),
+    (String? token) => const BookMarket(),
+    (String? token) => ProfileScreen(token: token),
   ];
 }
